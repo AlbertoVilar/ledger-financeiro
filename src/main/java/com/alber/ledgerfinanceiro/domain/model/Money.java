@@ -30,6 +30,10 @@ public record Money(
         return amount.signum() > 0;
     }
 
+    public boolean isZero() {
+        return amount.signum() == 0;
+    }
+
     private void validateSameCurrency(Money other) {
         Objects.requireNonNull(other, "O valor a ser comparado/calculado é obrigatório.");
 
