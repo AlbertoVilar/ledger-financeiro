@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "Ledger Financeiro - Testes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "sourceAccountId",
+      "value": "9fd9bd31-2a77-457a-9984-230b2517c5a1"
+    },
+    {
+      "key": "destinationAccountId",
+      "value": "04959132-8689-4b05-943c-09a24b944b23"
+    },
+    {
+      "key": "transferId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Contas",
+      "item": [
+        {
+          "name": "Criar conta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"BRL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/v1/accounts"
+          }
+        },
+        {
+          "name": "Buscar conta",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/accounts/{{sourceAccountId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transferências",
+      "item": [
+        {
+          "name": "Realizar transferência",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sourceAccountId\": \"{{sourceAccountId}}\",\n  \"destinationAccountId\": \"{{destinationAccountId}}\",\n  \"amount\": 50.00,\n  \"currency\": \"BRL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/v1/transfers"
+          }
+        },
+        {
+          "name": "Buscar transferência",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/transfers/{{transferId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
