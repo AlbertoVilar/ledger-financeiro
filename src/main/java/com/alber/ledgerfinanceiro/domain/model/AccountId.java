@@ -7,6 +7,6 @@ public record AccountId(
         UUID id
 ) {
     public AccountId {
-        Objects.requireNonNull(id);
+        Objects.requireNonNull(id, "O identificador da conta é obrigatório");
     }
 }
