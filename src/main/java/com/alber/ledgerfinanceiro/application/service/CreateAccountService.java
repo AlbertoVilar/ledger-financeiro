@@ -1,4 +1,4 @@
-package com.alber.ledgerfinanceiro.application.usecase;
+package com.alber.ledgerfinanceiro.application.service;
 
 import com.alber.ledgerfinanceiro.application.port.in.CreateAccountCommand;
 import com.alber.ledgerfinanceiro.application.port.in.CreateAccountUseCase;

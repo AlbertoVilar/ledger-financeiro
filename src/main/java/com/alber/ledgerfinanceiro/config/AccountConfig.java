@@ -6,7 +6,7 @@ import com.alber.ledgerfinanceiro.application.port.out.LoadAccountPort;
 import com.alber.ledgerfinanceiro.application.port.out.SaveAccountPort;
 import com.alber.ledgerfinanceiro.application.port.out.SaveTransferPort;
 import com.alber.ledgerfinanceiro.application.service.TransferService;
-import com.alber.ledgerfinanceiro.application.usecase.CreateAccountService;
+import com.alber.ledgerfinanceiro.application.service.CreateAccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
