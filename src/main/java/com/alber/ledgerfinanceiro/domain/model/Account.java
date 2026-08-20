@@ -1,24 +1,28 @@
 package com.alber.ledgerfinanceiro.domain.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Currency;
 
 public class Account {
 
     private final AccountId id;
+    private final Instant openedAt;
     private AccountStatus status;
     private Money balance;
 
-    public Account(AccountId id, AccountStatus status, Money balance) {
+    public Account(AccountId id, AccountStatus status, Money balance, Instant openedAt) {
         this.id = id;
         this.status = status;
         this.balance = balance;
+        this.openedAt = openedAt;
     }
     public static Account create(AccountId id, Currency currency) {
         return new Account(
                 id,
                 AccountStatus.ACTIVE,
-                new Money(BigDecimal.ZERO, currency)
+                new Money(BigDecimal.ZERO, currency),
+                Instant.now()
         );
     }
     public AccountId getId() {
@@ -27,6 +31,10 @@ public class Account {
 
     public AccountStatus getStatus() {
         return status;
+    }
+
+    public Instant getOpenedAt() {
+        return openedAt;
     }
 
     public Money getBalance() {

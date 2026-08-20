@@ -20,7 +20,8 @@ public final class AccountPersistenceMapper {
                 account.getId().id(),
                 account.getStatus(),
                 account.getBalance().amount(),
-                account.getBalance().currency().getCurrencyCode()
+                account.getBalance().currency().getCurrencyCode(),
+                account.getOpenedAt()
         );
     }
 
@@ -33,7 +34,8 @@ public final class AccountPersistenceMapper {
                 new Money(
                         entity.getBalanceAmount(),
                         Currency.getInstance(entity.getBalanceCurrency())
-                )
+                ),
+                entity.getOpenedAt()
         );
     }
 }
