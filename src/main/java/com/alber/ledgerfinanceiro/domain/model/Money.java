@@ -1,5 +1,7 @@
 package com.alber.ledgerfinanceiro.domain.model;
 
+import com.alber.ledgerfinanceiro.domain.exceptions.CurrencyMismatchException;
+
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
@@ -38,7 +40,7 @@ public record Money(
         Objects.requireNonNull(other, "O valor a ser comparado/calculado é obrigatório.");
 
         if (!this.currency.equals(other.currency())) {
-            throw new IllegalArgumentException("As moedas devem ser iguais para realizar a operação.");
+            throw new CurrencyMismatchException("As moedas devem ser iguais para realizar a operação.");
         }
     }
 

@@ -1,5 +1,10 @@
 package com.alber.ledgerfinanceiro.domain.model;
 
+import com.alber.ledgerfinanceiro.domain.exceptions.AccountBlockedException;
+import com.alber.ledgerfinanceiro.domain.exceptions.AccountClosedException;
+import com.alber.ledgerfinanceiro.domain.exceptions.InsufficientBalanceException;
+import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Currency;
@@ -54,17 +59,17 @@ public class Account {
         ensurePositive(amount);
 
         if (!balance.isGreaterThanOrEqual(amount)) {
-            throw new IllegalStateException("Saldo insuficiente");
+            throw new InsufficientBalanceException("Saldo insuficiente");
         }
         balance = balance.subtract(amount);
     }
 
     public void block() {
         if (this.status == AccountStatus.CLOSED) {
-            throw new IllegalStateException("A conta encerrada não pode ser bloqueada.");
+            throw new AccountClosedException("A conta encerrada não pode ser bloqueada.");
         }
         if (this.status == AccountStatus.BLOCKED) {
-            throw new IllegalStateException("A conta já está bloqueada.");
+            throw new AccountBlockedException("A conta já está bloqueada.");
         }
 
         this.status = AccountStatus.BLOCKED;
@@ -72,7 +77,7 @@ public class Account {
 
     public void unblock() {
         if (this.status == AccountStatus.CLOSED) {
-            throw new IllegalStateException("A conta encerrada não pode ser desbloqueada.");
+            throw new AccountClosedException("A conta encerrada não pode ser desbloqueada.");
         }
         if (this.status != AccountStatus.BLOCKED) {
             throw new IllegalStateException("A conta não está bloqueada.");
@@ -84,7 +89,7 @@ public class Account {
     public void close() {
 
         if (this.status == AccountStatus.CLOSED) {
-            throw new IllegalStateException("A conta já foi encerrada.");
+            throw new AccountClosedException("A conta já foi encerrada.");
         }
         if (!balance.isZero()) {
            throw new IllegalStateException("A conta só pode ser encerrada com saldo zerado.");
@@ -93,14 +98,17 @@ public class Account {
     }
 
     private void ensureActive() {
-        if (this.status != AccountStatus.ACTIVE) {
-            throw new IllegalStateException("A conta não está ativa.");
+        if (this.status == AccountStatus.BLOCKED) {
+            throw new AccountBlockedException("A conta está bloqueada.");
+        }
+        if (this.status == AccountStatus.CLOSED) {
+            throw new AccountClosedException("A conta está encerrada.");
         }
     }
 
     private void ensurePositive(Money amount) {
         if (!amount.isPositive()) {
-            throw new IllegalArgumentException("O valor da movimentação deve ser positivo.");
+            throw new InvalidTransactionAmountException("O valor da movimentação deve ser positivo.");
         }
     }
 
