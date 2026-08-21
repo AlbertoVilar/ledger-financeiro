@@ -1,0 +1,24 @@
+package com.alber.ledgerfinanceiro.adapter.in.web.exception;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ValidationError extends CustomError {
+
+    private final List<FieldMessage> errors = new ArrayList<>();
+
+    public ValidationError(Instant timestamp, int status, String error, String message, String path) {
+        super(timestamp, status, error, message, path);
+    }
+
+    public void addError(String fieldName, String message) {
+        errors.removeIf(error -> error.fieldName().equals(fieldName));
+
+        errors.add(new FieldMessage(fieldName, message));
+    }
+
+    public List<FieldMessage> getErrors() {
+        return List.copyOf(errors);
+    }
+}
