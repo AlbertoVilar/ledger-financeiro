@@ -2,6 +2,8 @@ package com.alber.ledgerfinanceiro.domain.model;
 
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountBlockedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountClosedException;
+import com.alber.ledgerfinanceiro.domain.exceptions.AccountHasBalanceException;
+import com.alber.ledgerfinanceiro.domain.exceptions.AccountNotBlockedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InsufficientBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
 
@@ -80,7 +82,7 @@ public class Account {
             throw new AccountClosedException("A conta encerrada não pode ser desbloqueada.");
         }
         if (this.status != AccountStatus.BLOCKED) {
-            throw new IllegalStateException("A conta não está bloqueada.");
+            throw new AccountNotBlockedException("A conta não está bloqueada.");
         }
 
         this.status = AccountStatus.ACTIVE;
@@ -92,7 +94,7 @@ public class Account {
             throw new AccountClosedException("A conta já foi encerrada.");
         }
         if (!balance.isZero()) {
-           throw new IllegalStateException("A conta só pode ser encerrada com saldo zerado.");
+           throw new AccountHasBalanceException("A conta só pode ser encerrada com saldo zerado.");
         }
         this.status = AccountStatus.CLOSED;
     }

@@ -1,5 +1,8 @@
 package com.alber.ledgerfinanceiro.domain.model;
 
+import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
+import com.alber.ledgerfinanceiro.domain.exceptions.SameAccountTransferException;
+
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -31,10 +34,10 @@ public class Transfer {
         this.occurredAt = Objects.requireNonNull(occurredAt, "A data da transferência é obrigatória.");
 
         if (sourceAccountId.equals(destinationAccountId)) {
-            throw new IllegalArgumentException("A conta de origem deve ser diferente da conta de destino.");
+            throw new SameAccountTransferException("A conta de origem deve ser diferente da conta de destino.");
         }
         if (!amount.isPositive()) {
-            throw new IllegalArgumentException("O valor da transferência deve ser positivo.");
+            throw new InvalidTransactionAmountException("O valor da transferência deve ser positivo.");
         }
     }
 
