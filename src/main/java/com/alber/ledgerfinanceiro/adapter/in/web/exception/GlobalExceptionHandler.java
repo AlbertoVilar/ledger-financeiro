@@ -3,9 +3,12 @@ package com.alber.ledgerfinanceiro.adapter.in.web.exception;
 import com.alber.ledgerfinanceiro.application.exceptions.ResourceNotFoundException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountBlockedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountClosedException;
+import com.alber.ledgerfinanceiro.domain.exceptions.AccountHasBalanceException;
+import com.alber.ledgerfinanceiro.domain.exceptions.AccountNotBlockedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.CurrencyMismatchException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InsufficientBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
+import com.alber.ledgerfinanceiro.domain.exceptions.SameAccountTransferException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +74,32 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(AccountHasBalanceException.class)
+    public ResponseEntity<CustomError> handleAccountHasBalance(
+            AccountHasBalanceException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Conta com saldo",
+                exception.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(AccountNotBlockedException.class)
+    public ResponseEntity<CustomError> handleAccountNotBlocked(
+            AccountNotBlockedException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Conta não bloqueada",
+                exception.getMessage(),
+                request
+        );
+    }
+
     @ExceptionHandler(InvalidTransactionAmountException.class)
     public ResponseEntity<CustomError> handleInvalidTransactionAmount(
             InvalidTransactionAmountException exception,
@@ -79,6 +108,19 @@ public class GlobalExceptionHandler {
         return buildError(
                 HttpStatus.UNPROCESSABLE_ENTITY,
                 "Valor da transação inválido",
+                exception.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(SameAccountTransferException.class)
+    public ResponseEntity<CustomError> handleSameAccountTransfer(
+            SameAccountTransferException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                "Transferência inválida",
                 exception.getMessage(),
                 request
         );
