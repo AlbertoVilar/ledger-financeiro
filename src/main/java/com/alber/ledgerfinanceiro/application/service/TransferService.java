@@ -7,7 +7,6 @@ import com.alber.ledgerfinanceiro.application.port.out.LoadAccountPort;
 import com.alber.ledgerfinanceiro.application.port.out.SaveAccountPort;
 import com.alber.ledgerfinanceiro.application.port.out.SaveTransferPort;
 import com.alber.ledgerfinanceiro.domain.model.Transfer;
-import org.springframework.transaction.annotation.Transactional;
 
 public class TransferService implements TransferBetweenAccountsUseCase {
 
@@ -26,7 +25,6 @@ public class TransferService implements TransferBetweenAccountsUseCase {
     }
 
     @Override
-    @Transactional
     public Transfer execute(TransferBetweenAccountsCommand command) {
         var newTransfer = Transfer.create(
                 command.sourceAccountId(),

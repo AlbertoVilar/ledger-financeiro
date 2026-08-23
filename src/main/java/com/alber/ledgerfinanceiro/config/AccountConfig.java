@@ -10,6 +10,8 @@ import com.alber.ledgerfinanceiro.application.service.CreateAccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Configuration
 @EnableJpaAuditing
@@ -24,8 +26,12 @@ public class AccountConfig {
     public TransferBetweenAccountsUseCase transferBetweenAccountsUseCase(
             LoadAccountPort loadAccountPort,
             SaveAccountPort saveAccountPort,
-            SaveTransferPort saveTransferPort
+            SaveTransferPort saveTransferPort,
+            PlatformTransactionManager transactionManager
     ) {
-        return new TransferService(loadAccountPort, saveAccountPort, saveTransferPort);
+        var transferService = new TransferService(loadAccountPort, saveAccountPort, saveTransferPort);
+        var transactionTemplate = new TransactionTemplate(transactionManager);
+
+        return command -> transactionTemplate.execute(status -> transferService.execute(command));
     }
 }
