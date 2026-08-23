@@ -1,5 +1,6 @@
 package com.alber.ledgerfinanceiro.application.service;
 
+import com.alber.ledgerfinanceiro.application.exceptions.ResourceNotFoundException;
 import com.alber.ledgerfinanceiro.application.port.in.TransferBetweenAccountsCommand;
 import com.alber.ledgerfinanceiro.application.port.in.TransferBetweenAccountsUseCase;
 import com.alber.ledgerfinanceiro.application.port.out.LoadAccountPort;
@@ -27,13 +28,19 @@ public class TransferService implements TransferBetweenAccountsUseCase {
     @Override
     @Transactional
     public Transfer execute(TransferBetweenAccountsCommand command) {
+        var newTransfer = Transfer.create(
+                command.sourceAccountId(),
+                command.destinationAccountId(),
+                command.amount()
+        );
+
         var sourceAccount = loadAccountPort.findById(command.sourceAccountId())
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Conta de origem não encontrada: " + command.sourceAccountId().id()
                 ));
 
         var destinationAccount = loadAccountPort.findById(command.destinationAccountId())
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Conta de destino não encontrada: " + command.destinationAccountId().id()
                 ));
 
@@ -42,12 +49,6 @@ public class TransferService implements TransferBetweenAccountsUseCase {
 
         saveAccountPort.save(sourceAccount);
         saveAccountPort.save(destinationAccount);
-
-        var newTransfer = Transfer.create(
-                sourceAccount.getId(),
-                destinationAccount.getId(),
-                command.amount()
-        );
 
         return saveTransferPort.save(newTransfer);
     }

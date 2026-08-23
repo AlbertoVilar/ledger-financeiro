@@ -2,6 +2,7 @@ package com.alber.ledgerfinanceiro.application.port.in;
 
 import com.alber.ledgerfinanceiro.domain.model.AccountId;
 import com.alber.ledgerfinanceiro.domain.model.Money;
+import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public record TransferBetweenAccountsCommand(
         Objects.requireNonNull(amount, "O valor da transferência é obrigatório.");
 
         if (!amount.isPositive()) {
-            throw new IllegalArgumentException("O valor da transferência deve ser positivo.");
+            throw new InvalidTransactionAmountException("O valor da transferência deve ser positivo.");
         }
     }
 }
