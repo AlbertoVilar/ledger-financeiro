@@ -36,6 +36,24 @@ public record Money(
         return amount.signum() == 0;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Money other)) {
+            return false;
+        }
+
+        return currency.equals(other.currency())
+                && amount.compareTo(other.amount()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(amount.stripTrailingZeros(), currency);
+    }
+
     private void validateSameCurrency(Money other) {
         Objects.requireNonNull(other, "O valor a ser comparado/calculado é obrigatório.");
 
