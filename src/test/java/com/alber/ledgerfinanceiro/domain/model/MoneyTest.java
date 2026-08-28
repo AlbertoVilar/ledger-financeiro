@@ -121,6 +121,14 @@ public class MoneyTest {
         );
     }
 
+    @Test
+    void shouldNotBeEqualWhenCurrenciesAreDifferent() {
+        var amountInBrl = brl("100.00");
+        var amountInUsd = usd("100.00");
+
+        assertFalse(amountInBrl.equals(amountInUsd));
+    }
+
     private static Money brl(String amount) {
         return new Money(new BigDecimal(amount), BRL);
     }
