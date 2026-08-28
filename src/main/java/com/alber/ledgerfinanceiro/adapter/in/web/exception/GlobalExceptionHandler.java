@@ -7,6 +7,7 @@ import com.alber.ledgerfinanceiro.domain.exceptions.AccountHasBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountNotBlockedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.CurrencyMismatchException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InsufficientBalanceException;
+import com.alber.ledgerfinanceiro.domain.exceptions.InvalidAccountBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
 import com.alber.ledgerfinanceiro.domain.exceptions.SameAccountTransferException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.time.Instant;
 
@@ -113,6 +115,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidAccountBalanceException.class)
+    public ResponseEntity<CustomError> handleInvalidAccountBalance(
+            InvalidAccountBalanceException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                "Saldo da conta inválido",
+                exception.getMessage(),
+                request
+        );
+    }
+
     @ExceptionHandler(SameAccountTransferException.class)
     public ResponseEntity<CustomError> handleSameAccountTransfer(
             SameAccountTransferException exception,
@@ -158,6 +173,19 @@ public class GlobalExceptionHandler {
         }
 
         return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<CustomError> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                "Corpo da requisição inválido",
+                "Não foi possível ler o corpo da requisição.",
+                request
+        );
     }
 
     private ResponseEntity<CustomError> buildError(
