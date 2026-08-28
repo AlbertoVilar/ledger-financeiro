@@ -5,6 +5,7 @@ import com.alber.ledgerfinanceiro.domain.exceptions.AccountClosedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountHasBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountNotBlockedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InsufficientBalanceException;
+import com.alber.ledgerfinanceiro.domain.exceptions.InvalidAccountBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
 import org.junit.jupiter.api.Test;
 
@@ -48,6 +49,16 @@ public class AccountTest {
         account.withdraw(new Money(new BigDecimal("25.00"), BRL));
 
         assertEquals(new Money(new BigDecimal("75.00"), BRL), account.getBalance());
+    }
+
+    @Test
+    void shouldWithdrawEntireAvailableBalance() {
+        // Permite saque igual ao saldo e deixa a conta com saldo zero.
+        var account = anActiveAccount(new BigDecimal("100.00"));
+
+        account.withdraw(new Money(new BigDecimal("100.00"), BRL));
+
+        assertEquals(new Money(BigDecimal.ZERO, BRL), account.getBalance());
     }
 
     @Test
@@ -227,6 +238,17 @@ public class AccountTest {
         );
 
         assertEquals(openedAt, account.getOpenedAt());
+    }
+
+    @Test
+    void shouldNotCreateAccountWithNegativeInitialBalance() {
+        // Impede a reconstituição de uma conta com saldo inicial negativo.
+        assertThrows(InvalidAccountBalanceException.class, () -> new Account(
+                new AccountId(UUID.randomUUID()),
+                AccountStatus.ACTIVE,
+                new Money(new BigDecimal("-0.01"), BRL),
+                Instant.now()
+        ));
     }
 
     private Account anActiveAccount(BigDecimal initialBalance) {

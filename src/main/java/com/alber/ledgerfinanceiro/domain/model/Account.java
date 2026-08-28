@@ -5,11 +5,13 @@ import com.alber.ledgerfinanceiro.domain.exceptions.AccountClosedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountHasBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.AccountNotBlockedException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InsufficientBalanceException;
+import com.alber.ledgerfinanceiro.domain.exceptions.InvalidAccountBalanceException;
 import com.alber.ledgerfinanceiro.domain.exceptions.InvalidTransactionAmountException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Currency;
+import java.util.Objects;
 
 public class Account {
 
@@ -19,10 +21,13 @@ public class Account {
     private Money balance;
 
     public Account(AccountId id, AccountStatus status, Money balance, Instant openedAt) {
-        this.id = id;
-        this.status = status;
-        this.balance = balance;
-        this.openedAt = openedAt;
+        this.id = Objects.requireNonNull(id, "O identificador da conta não pode ser nulo");
+        this.balance = Objects.requireNonNull(balance, "O saldo não pode ser nulo");
+        if (!balance.isPositive() && !balance.isZero()) {
+            throw new InvalidAccountBalanceException("O saldo inicial da conta não pode ser negativo.");
+        }
+        this.status = Objects.requireNonNull(status, "O status não pode ser nulo");
+        this.openedAt = Objects.requireNonNull(openedAt, "A data de abertura não pode ser nula");
     }
     public static Account create(AccountId id, Currency currency) {
         return new Account(
