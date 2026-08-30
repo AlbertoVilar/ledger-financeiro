@@ -4,6 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.EntityListeners;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -11,6 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "transfers")
+@EntityListeners(AuditingEntityListener.class)
 public class TransferJpaEntity {
 
     @Id
@@ -30,6 +34,10 @@ public class TransferJpaEntity {
 
     @Column(name = "occurred_at", nullable = false)
     private Instant occurredAt;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
     protected TransferJpaEntity() {
     }
@@ -72,5 +80,9 @@ public class TransferJpaEntity {
 
     public Instant getOccurredAt() {
         return occurredAt;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }
