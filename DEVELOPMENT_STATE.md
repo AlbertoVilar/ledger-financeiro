@@ -159,28 +159,28 @@ O Maven Failsafe está configurado; portanto, `mvn verify` executa testes unitá
 - Criação de conta: `CreateAccountRequest`, `CreateAccountResponse` e `CreateAccountWebMapper`.
 - Transferência: `TransferRequest`, `TransferResponse` e `TransferWebMapper`.
 
-Os requests usam validação Bean Validation por meio de `@Valid`.
+Os requests usam validação Bean Validation por meio de `@Valid`. Em `CreateAccountRequest`, a moeda é normalizada com `trim()` e `toUpperCase(Locale.ROOT)` antes da validação; portanto, entradas como `"brl"` são tratadas como `"BRL"`.
 
 ### Tratamento de erros
 
 - `GlobalExceptionHandler` converte exceções de domínio, recursos não encontrados, erros de validação e corpo JSON inválido em respostas HTTP.
 - `CustomError`, `ValidationError` e `FieldMessage` padronizam a resposta de erro.
 - `GlobalExceptionHandlerTest` cobre o tratamento de exceções da camada web.
+- `CreateAccountControllerTest` cobre criação bem-sucedida, normalização da moeda, validação de moeda e JSON malformado.
+- `TransferControllerTest` cobre criação bem-sucedida, validação de identificadores, valor e moeda, além de formatos JSON incompatíveis.
 
 ### Ainda pendente nesta camada
 
 - endpoints para bloquear, desbloquear, encerrar e consultar contas;
 - endpoint de consulta de transferência/comprovante e extrato;
-- testes HTTP dos controllers.
 
 ## 6. Próximos passos — backlog imediato
 
-1. Criar testes HTTP para `CreateAccountController` e `TransferController`.
-2. Evoluir a consulta de transferências conforme necessidade real: `LoadTransferPort`, caso de uso de comprovante e adaptador correspondente.
-3. Implementar consultas e operações REST restantes de `Account` (busca, bloqueio, desbloqueio e encerramento).
-4. Estudar e implementar proteção de concorrência para transferências: iniciar com controle otimista usando `@Version` ou avaliar bloqueio pessimista conforme o cenário.
-5. Definir estratégia de idempotência e tratamento de retry para operações financeiras antes de integrar mensageria.
-6. Posteriormente, criar CI/CD no GitHub Actions como etapa de aprendizado, usando `mvn verify` como comando de validação.
+1. Evoluir a consulta de transferências conforme necessidade real: `LoadTransferPort`, caso de uso de comprovante e adaptador correspondente.
+2. Implementar consultas e operações REST restantes de `Account` (busca, bloqueio, desbloqueio e encerramento).
+3. Estudar e implementar proteção de concorrência para transferências: iniciar com controle otimista usando `@Version` ou avaliar bloqueio pessimista conforme o cenário.
+4. Definir estratégia de idempotência e tratamento de retry para operações financeiras antes de integrar mensageria.
+5. Posteriormente, criar CI/CD no GitHub Actions como etapa de aprendizado, usando `mvn verify` como comando de validação.
 
 ## Como validar localmente
 
